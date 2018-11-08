@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs
+/Surfaces/MackieControl/x64
+/Surfaces/MackieControl/.vs/MackieControl_vs14/v15
+/Surfaces/MackieControl/Unicode Release
+/Surfaces/MackieControl/Release
+/Framework2
+/Surfaces/MackieControl/MackieControl_vs14.vcxproj.user
