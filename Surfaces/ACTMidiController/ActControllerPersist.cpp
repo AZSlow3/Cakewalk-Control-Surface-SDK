@@ -268,19 +268,23 @@ HRESULT CACTController::Persist(IStream* pStm, bool bSave, CString *pStr)
 		if (FAILED(Persist(pStm, bSave, &iLen, sizeof(iLen))))
 			return E_FAIL;
 
-		char * sz = new char[iLen+1];
-		TCHAR * tsz = new TCHAR[iLen+1];
 		// shouldn't be trying to read a novel!
 		if (iLen < 0 || iLen >= INT_MAX)
 		{
 			TRACE("CACTController::Persist(): ERROR: bogus iLen %d\n", iLen);
-			ASSERT(0);
+			return E_INVALIDARG;
 		}
 
+		char* sz = new char[iLen + 1];
+		TCHAR* tsz = new TCHAR[iLen + 1];
+
 		HRESULT hr = Persist(pStm, bSave, (void*)sz, iLen);
-				
-		Char2TCHAR(tsz, sz, iLen+1);
-		*pStr = tsz; // assign to dest
+
+		if ( SUCCEEDED( hr ) )
+		{				
+			Char2TCHAR(tsz, sz, iLen+1);
+			*pStr = tsz; // assign to dest
+		}
 
 		// free allocations
 		delete[] sz;

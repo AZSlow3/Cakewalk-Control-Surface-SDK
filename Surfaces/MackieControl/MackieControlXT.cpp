@@ -455,12 +455,15 @@ bool CMackieControlXT::OnHUIMidiInShort(BYTE bStatus, BYTE bD1, BYTE bD2)
 	if (bD1 < 0x08) // fader msb
 	{
 		m_bHUIFaderHi[bD1] = bD2;
-		return true;
+		m_bHUIFaderLo[bD1] = 0;
+		return OnFader( bD1, m_bHUIFaderLo[bD1], m_bHUIFaderHi[bD1] );
 	}
 
 	if ((bD1 >= 0x20) && (bD1 <= 0x27)) // fader lsb
 	{
-		return OnFader((bD1 - 0x20), bD2, m_bHUIFaderHi[(bD1 - 0x20)]);
+		BYTE bChan = (bD1 - 0x20);
+		m_bHUIFaderLo[bChan] = bD2;
+		return OnFader( bChan, m_bHUIFaderLo[bChan], m_bHUIFaderHi[bChan] );
 	}
 
 	if ((bD1 == 0x2F) || (bD1 == 0x2C)) // switch
@@ -526,7 +529,27 @@ bool CMackieControlXT::TranslateHUIButtons(BYTE bCurrentZone, BYTE bPort, bool b
 					break;
 			}
 			break;
+
+		case 0x0B:
+			{
+				// Switching vPots to/from Pan and Send Vol
+				if ( bPort >= 0x03 && bPort <= 0x07 )
+				{
+					// HUI supports 5 sends, with 0x07 being the 1st and 0x03 being the 5th
+					m_bHUIAuxSendOffset = 0x07 - bPort;
+					m_cState.SetAssignment( Assignment::MCS_ASSIGNMENT_SEND );
+				}
+				else
+				{
+					// Set back to pan, and reset AuxSendOffset
+					m_cState.SetAssignment( Assignment::MCS_ASSIGNMENT_PAN );
+					m_bHUIAuxSendOffset = 0;
+				}
+
+				return true;
+			}
 	}
+
 	return (bD1 != 0xFF);
 }
 

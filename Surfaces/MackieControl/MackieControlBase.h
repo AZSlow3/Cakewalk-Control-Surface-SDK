@@ -293,7 +293,9 @@ protected:
 
 	BYTE m_bHuiScribble[13] = { 0xF0, 0x00, 0x00, 0x66, 0x05, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF7 };
 	BYTE m_bCurrentHUIZone;
-	BYTE m_bHUIFaderHi[8];
+	BYTE m_bHUIFaderHi[8] = { 0 };
+	BYTE m_bHUIFaderLo[8] = { 0 };
+	BYTE m_bHUIAuxSendOffset = 0; // index of send within current track/bus
 	virtual bool SetHuiLED(BYTE bID, BYTE bVal, bool bForceSend) = 0;
 	virtual bool TranslateHUIButtons(BYTE bCurrentZone, BYTE bPort, bool bOn, BYTE &bD1, BYTE &bD2) = 0;
 	virtual bool TranslateUniversalButtons( BYTE &bD1, BYTE &bD2 ) = 0;

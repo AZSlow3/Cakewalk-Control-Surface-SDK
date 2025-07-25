@@ -300,7 +300,8 @@ interface ISonarProject2 : ISonarProject
 
 typedef enum EProjectParam
 {
-	EPP_SNAP
+	EPP_SNAP = 0,
+	EPP_OFFSETMODE,
 } EProjectParam;
 
 [

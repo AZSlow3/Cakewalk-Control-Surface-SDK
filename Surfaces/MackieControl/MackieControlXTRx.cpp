@@ -18,6 +18,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #define ONE_OVER_1023		0.0009775171065493646f
+#define ONE_OVER_16383		0.00006103888176768602f
 #define MC_LOOP_ON_OFF		89
 #define MC_SCRUB			101
 
@@ -29,9 +30,19 @@ bool CMackieControlXT::OnFader(BYTE bChan, BYTE bD1, BYTE bD2)
 	if (bChan > 7)
 		return false;
 
-	WORD wVal = (((WORD)bD2 << 7) | (WORD)bD1) >> 4;
+	WORD wVal = 0;
+	float fVal = 0;
 
-	float fVal = (float)wVal * ONE_OVER_1023;
+	if ( UsingHUIProtocol() )
+	{
+		wVal = (((WORD)bD2 << 7) | (WORD)bD1);
+		fVal = (float)wVal * ONE_OVER_16383;
+	}
+	else
+	{
+		wVal = (((WORD)bD2 << 7) | (WORD)bD1) >> 4;
+		fVal = (float)wVal* ONE_OVER_1023;
+	}
 
 	HRESULT hr = m_SwFader[bChan].SetNormalizedVal(fVal, MIX_TOUCH_MANUAL);
 
@@ -52,7 +63,7 @@ bool CMackieControlXT::OnVPot(BYTE bD1, BYTE bD2)
 	BYTE bChan = bD1 & 0x0F;
 	bool bLeft = (bD2 & 0x40) != 0;
 
-	if (UsingHUIProtocol())
+	if ( UsingHUIProtocol() )
 		bLeft = !bLeft;
 
 	CCriticalSectionAuto csa(m_cState.GetCS());
@@ -98,7 +109,14 @@ bool CMackieControlXT::OnVPot(BYTE bD1, BYTE bD2)
 					fStepSize *= 0.1f;
 			}
 
-			HRESULT hr = m_SwVPot[bChan].Adjust(bLeft ? -fStepSize : fStepSize);
+			if ( UsingHUIProtocol() && m_cState.GetAssignment() == MCS_ASSIGNMENT_SEND )
+			{
+				// Set the dwParamNum to the Aux Send offset so we're controlling the correct send's volume
+				m_SwVPot[bChan].SetParams( m_SwVPot[bChan].GetMixerStrip(),
+					m_SwVPot[bChan].GetStripNum(), m_SwVPot[bChan].GetMixerParam(), m_bHUIAuxSendOffset );
+			}
+
+			HRESULT hr = m_SwVPot[ bChan ].Adjust(bLeft ? -fStepSize : fStepSize);
 
 			// The SetVal() always reports a failure, even though it works, so
 			// we can't do "if (SUCCEEDED(hr))" here
@@ -314,8 +332,8 @@ void CMackieControlXT::OnSwitchSelect(BYTE bChan)
 		{
 			case MCS_MODIFIER_NONE:
 			{
-				m_cState.SetSelectedStripNum(m_SwStrip[bChan].GetStripNum(),
-					(m_cState.GetSelectHighlightsTrack()) ? m_pMixer : NULL);
+				m_cState.SetSelectedStripNum( m_SwStrip[bChan].GetStripNum(),
+					(m_cState.GetSelectHighlightsTrack()) ? m_pMixer : NULL, true );
 
 				TempDisplaySelectedTrackName();
 			}
@@ -343,14 +361,14 @@ void CMackieControlXT::OnSwitchFader(BYTE bChan, bool bDown)
 			m_cState.GetFlipMode() == MCS_FLIP_NORMAL)
 		{
 			m_cState.SetSelectedStripNum(m_SwFader[bChan].GetStripNum(),
-				(m_cState.GetSelectHighlightsTrack()) ? m_pMixer : NULL);
+				(m_cState.GetSelectHighlightsTrack()) ? m_pMixer : NULL, true );
 		}
 	}
 	else
 	{
 		m_SwFader[bChan].TouchRelease();
 
-		UpdateFader(bChan, true);
+		UpdateFader( bChan, true );
 	}
 }
 

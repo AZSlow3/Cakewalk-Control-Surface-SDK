@@ -260,7 +260,7 @@ public:
 	void SetParamNumOffset(int iParamNumOffset);
 	void SetMasterFaderOffset(SONAR_MIXER_STRIP eMixerStrip, DWORD dwOffset);
 	void SetMasterFaderType(SONAR_MIXER_STRIP eMixerStrip);
-	void SetSelectedStripNum(DWORD dwSelectedStripNum, ISonarMixer *pMixer =NULL);
+	void SetSelectedStripNum(DWORD dwSelectedStripNum, ISonarMixer *pMixer =NULL, bool bForce = false);
 	void SetMixerStrip(SONAR_MIXER_STRIP eMixerStrip);
 	void SetAssignment(Assignment eAssignment);
 	void SavePreSynthRackAssignments();

@@ -60,7 +60,7 @@ void CMackieControlFader::Send(bool bForceSend)
 	if (m_bChan > 8 || m_fVal < 0 || m_fVal > 1.0)
 		return;
 
-	WORD wVal = ((WORD)(m_fVal * 16383)) & 0xFFF0;
+	WORD wVal = ((WORD)(m_fVal * 16383)) & (m_pMackieControlBase->UsingHUIProtocol() ? 0xFFFF : 0xFFF0);
 
 	if (!bForceSend && m_wVal == wVal)
 		return;
@@ -77,7 +77,7 @@ void CMackieControlFader::Send(bool bForceSend)
 		if ( m_pMackieControlBase->UsingHUIProtocol() )
 		{
 			m_pMackieControlBase->SendMidiShort( 0xB0, m_bChan, bHigh );
-			m_pMackieControlBase->SendMidiShort( 0xB0, 0x20 | m_bChan, bLow );
+			m_pMackieControlBase->SendMidiShort( 0x00, 0x20 | m_bChan, bLow ); // use running status
 		}
 		else
 			m_pMackieControlBase->SendMidiShort( 0xE0 | m_bChan, bLow, bHigh );

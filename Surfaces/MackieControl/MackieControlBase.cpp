@@ -520,7 +520,13 @@ void CMackieControlBase::SetLED(BYTE bID, BYTE bVal, bool bForceSend)
 
 	if (UsingHUIProtocol())
 	{
+		if ( !bForceSend && m_bLEDs[bID] == bVal )
+			return;
+
+		m_bLEDs[bID] = bVal;
+
 		SetHuiLED(bID, bVal, bForceSend);
+		
 		return;
 	}
 	else if ( UsingUniversalProtocol() && !TranslateUniversalLED(bID) )

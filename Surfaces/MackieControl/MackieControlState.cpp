@@ -232,9 +232,9 @@ void CMackieControlState::SetMasterFaderType(SONAR_MIXER_STRIP eMixerStrip)
 
 /////////////////////////////////////////////////////////////////////////////
 
-void CMackieControlState::SetSelectedStripNum(DWORD dwSelectedStripNum, ISonarMixer *pMixer)
+void CMackieControlState::SetSelectedStripNum(DWORD dwSelectedStripNum, ISonarMixer *pMixer, bool bForce /*= false*/)
 {
-	if (m_dwSelectedStripNum != dwSelectedStripNum)
+	if (m_dwSelectedStripNum != dwSelectedStripNum || bForce )
 	{
 		m_dwSelectedStripNum = dwSelectedStripNum;
 
