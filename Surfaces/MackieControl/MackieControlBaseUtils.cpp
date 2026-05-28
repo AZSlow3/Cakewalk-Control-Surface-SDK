@@ -816,10 +816,13 @@ void CMackieControlBase::NudgeTimeCursor(JogResolution eJogResolution, Direction
 
 void CMackieControlBase::OnPlayPressed()
 {
+	FakeKeyPress(false, false, false, VK_SPACE);
+	/*
 	if (GetTransportState(TRANSPORT_STATE_PLAY))
 		DoCommand(NEW_CMD_STOP_WITH_NOW_MARKER);		// Pause
 	else
 		SetTransportState(TRANSPORT_STATE_PLAY, true);	// Play
+	*/
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -132,7 +132,7 @@ BEGIN
     GROUPBOX        "Layout",IDC_STATIC,255,302,199,33
     PUSHBUTTON      "Configure Layout",IDC_CONFIGURE_LAYOUT,291,313,128,14
     LTEXT           "Press F1 for Help.",IDC_STATIC,7,339,57,8
-    LTEXT           "Copyright © 2025, BandLab Technologies Pte. Ltd.",IDC_STATIC,293,339,162,8
+    LTEXT           "(moded) Copyright © 2025, BandLab Technologies Pte. Ltd.",IDC_STATIC,261,339,190,8
     LTEXT           "Meters:",IDC_STATIC,274,275,24,8
     COMBOBOX        IDC_METERS,299,273,120,150,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Disable handshake",IDC_DISABLE_HANDSHAKE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,274,208,77,10
